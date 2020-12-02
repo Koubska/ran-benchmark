@@ -6,7 +6,7 @@
 
 #include "../carl/src/carl/core/MultivariatePolynomial.h"
 #include "../carl/src/carl/core/UnivariatePolynomial.h"
-#include "../carl/src/carl/core/polynomialfunctions/RootFinder.h"
+#include "../carl/src/carl/formula/model/ran/real_roots.h"
 #include "../carl/src/carl/core/polynomialfunctions/to_univariate_polynomial.h"
 #include "../carl/src/carl/formula/model/ran/RealAlgebraicNumber.h"
 #include "../carl/src/carl-model/Model.h"
@@ -76,7 +76,7 @@ namespace carl {
 
         std::vector<RAN> isolate_real_roots(const Poly& p, carl::Variable v) {
             UMPoly poly = carl::to_univariate_polynomial(p.poly(), v);
-            return carl::rootfinder::realRoots(poly, mModel);
+            return carl::realRoots(poly, mModel);
         }
 
         std::vector<RAN> lift(const Poly& p, carl::Variable v) {
@@ -85,13 +85,13 @@ namespace carl {
                 return {RAN(0)};
             }
             std::vector<RAN> samples;
-            samples.emplace_back(sampleBelow(roots[0]));
+            samples.emplace_back(sample_below(roots[0]));
             samples.emplace_back(roots[0]);
             for (std::size_t i = 1; i < roots.size(); ++i) {
-                samples.emplace_back(sampleBetween(samples.back(), roots[i]));
+                samples.emplace_back(sample_between(samples.back(), roots[i]));
                 samples.emplace_back(roots[i]);
             }
-            samples.emplace_back(sampleAbove(samples.back()));
+            samples.emplace_back(sample_above(samples.back()));
             return samples;
         }
     };
