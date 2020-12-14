@@ -30,6 +30,7 @@ namespace carl {
     private:
         MPoly mPoly;
     public:
+        Poly(){}
         Poly(MPoly&& poly): mPoly(std::move(poly)) {}
         Poly(int i, carl::Variable x, unsigned n): mPoly(MPoly(i) * carl::pow(MPoly(x), n)) {
         }

@@ -7,10 +7,6 @@ auto discriminant(const Poly& p) {
     return resultant(p, p.derivative());
 }
 
-class PolyWrapper {
-    virtual std::size_t degree() const = 0;
-};
-
 // PolyWrapper operator+(const PolyWrapper& lhs, const PolyWrapper& rhs);
 // PolyWrapper operator-(const PolyWrapper& lhs, const PolyWrapper& rhs);
 // PolyWrapper operator*(const PolyWrapper& lhs, const PolyWrapper& rhs);
