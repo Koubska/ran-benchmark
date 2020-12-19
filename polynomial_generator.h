@@ -56,9 +56,8 @@ private:
     poly_lp2 = createPoly2(lp_wrapper);
 
     std::cout << "Called PolyGeneratorConstructor" << std::endl;
-    std::cout << "Carl: \t\t" << poly_carl1 << " , \t\t" << poly_carl2
-              << std::endl;
-    std::cout << "LibPoly: \t" << poly_lp1 << " , \t" << poly_lp2 << std::endl;
+    std::cout << "Carl:    " << poly_carl1 << "\t\t" << poly_carl2 << std::endl;
+    std::cout << "LibPoly: " << poly_lp1 << "\t\t" << poly_lp2 << std::endl;
   }
 
   PolynomialGenerator(const PolynomialGenerator &);
