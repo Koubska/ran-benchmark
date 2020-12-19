@@ -4,14 +4,6 @@
 #include <map>
 #include <string>
 
-template <typename Poly> auto discriminant(const Poly &p) {
-  return resultant(p, p.derivative());
-}
-
-// PolyWrapper operator+(const PolyWrapper& lhs, const PolyWrapper& rhs);
-// PolyWrapper operator-(const PolyWrapper& lhs, const PolyWrapper& rhs);
-// PolyWrapper operator*(const PolyWrapper& lhs, const PolyWrapper& rhs);
-
 class Wrapper {
 public:
   using PolyInit = std::initializer_list<int>;
