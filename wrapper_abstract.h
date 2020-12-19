@@ -1,10 +1,11 @@
 #pragma once
 
 #include <initializer_list>
+#include <map>
+#include <string>
 
-template<typename Poly>
-auto discriminant(const Poly& p) {
-    return resultant(p, p.derivative());
+template <typename Poly> auto discriminant(const Poly &p) {
+  return resultant(p, p.derivative());
 }
 
 // PolyWrapper operator+(const PolyWrapper& lhs, const PolyWrapper& rhs);
@@ -13,8 +14,8 @@ auto discriminant(const Poly& p) {
 
 class Wrapper {
 public:
-    using PolyInit = std::initializer_list<int>;
+  using PolyInit = std::initializer_list<int>;
 
-    // Set variable of given id to RAN given by polynomial and interval
-    //void set_variable(VARIABLE var, PolyInit poly, int low, int high) = 0;
+  // Set variable of given id to RAN given by polynomial and interval
+  // void set_variable(VARIABLE var, PolyInit poly, int low, int high) = 0;
 };

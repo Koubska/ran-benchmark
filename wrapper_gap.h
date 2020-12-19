@@ -8,9 +8,9 @@
 
 namespace gap {
 
-    void test() {
-        auto res = GAP_EvalString("x:=Indeterminate(Rationals,\"x\");");
-        PrintObj(res);
-    }
-
+void test() {
+  auto res = GAP_EvalString("x:=Indeterminate(Rationals,\"x\");");
+  PrintObj(res);
 }
+
+} // namespace gap
