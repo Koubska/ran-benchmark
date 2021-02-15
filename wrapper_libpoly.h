@@ -19,16 +19,15 @@ using Var = poly::Variable;
 class UniPoly {
   friend std::ostream &operator<<(std::ostream &os, const UniPoly &p);
 
-private:
+ private:
   UPoly uPoly;
 
-public:
-  UniPoly() {} // Zero Poly
+ public:
   UniPoly(int constant)
-      : uPoly(poly::Integer(constant)) {}           // Create Constant Poly
-  UniPoly(UPoly &&poly) : uPoly(std::move(poly)) {} // Copy Constructor
+      : uPoly(poly::Integer(constant)) {}            // Create Constant Poly
+  UniPoly(UPoly &&poly) : uPoly(std::move(poly)) {}  // Copy Constructor
   UniPoly(int coeff, Var x, unsigned int pow)
-      : uPoly(pow, coeff) {} // coeff * x^pow TODO var is not used
+      : uPoly(pow, coeff) {}  // coeff * x^pow TODO var is not used
 
   const UPoly poly() const { return uPoly; }
   UPoly poly() { return uPoly; }
@@ -37,16 +36,20 @@ public:
 class MultiPoly {
   friend std::ostream &operator<<(std::ostream &os, const MultiPoly &p);
 
-private:
+ private:
   MPoly mPoly;
 
-public:
-  MultiPoly() {}
+ public:
+  MultiPoly() : mPoly() {}  // Construct Zero Polynomial
   MultiPoly(int constant)
-      : mPoly(poly::Integer(constant)) {}             // Create Constant Poly
-  MultiPoly(MPoly &&poly) : mPoly(std::move(poly)) {} // Copy Constructor
+      : mPoly(poly::Integer(constant)) {}              // Create Constant Poly
+  MultiPoly(MPoly &&poly) : mPoly(std::move(poly)) {}  // Copy Constructor
   MultiPoly(int coeff, Var var, unsigned int pow)
       : mPoly(poly::Integer(coeff), var, pow) {}
+
+  const std::string type() const {
+    return "LibPoly" ;
+  }  
 
   const MPoly poly() const { return mPoly; }
   MPoly poly() { return mPoly; }
@@ -85,11 +88,15 @@ UniPoly operator*(const UniPoly &lhs, const UniPoly &rhs) {
 }
 
 class LibPolyWrapper {
-public:
+ public:
   using MultiPoly = libpoly::MultiPoly;
   using UniPoly = libpoly::UniPoly;
 
   Var fresh_variable(const char *name) { return Var(name); }
+
+  Var fresh_variable(const std::string name){
+    return Var(name.c_str()) ;
+  }
 };
 
-} // namespace libpoly
+}  // namespace libpoly

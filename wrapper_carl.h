@@ -23,14 +23,14 @@ using RAN = carl::RealAlgebraicNumber<mpq_class>;
 using Var = carl::Variable;
 
 class UniPoly {
-  friend std::ostream &operator<<(std::ostream &os, const UniPoly &p);
+  friend std::ostream& operator<<(std::ostream& os, const UniPoly& p);
 
-private:
+ private:
   UPoly uPoly;
 
-public:
+ public:
   // Poly() {} UnivariatePolynomial does not have the empty Constructor
-  UniPoly(UPoly &&poly) : uPoly(std::move(poly)) {}
+  UniPoly(UPoly&& poly) : uPoly(std::move(poly)) {}
   UniPoly(int coeff, Var var, unsigned int pow) : uPoly(var, coeff, pow) {}
 
   const UPoly poly() const { return uPoly; }
@@ -38,57 +38,63 @@ public:
 };
 
 class MultiPoly {
-  friend std::ostream &operator<<(std::ostream &os, const MultiPoly &p);
+  friend std::ostream& operator<<(std::ostream& os, const MultiPoly& p);
 
-private:
+ private:
   MPoly mPoly;
 
-public:
-  MultiPoly() {}
-  MultiPoly(MPoly &&poly) : mPoly(std::move(poly)) {}
-  MultiPoly(int i, Var x, unsigned n)
+ public:
+  MultiPoly() : mPoly() {}
+  MultiPoly(int constant) : mPoly(constant) {}  // Create Constant Poly
+  MultiPoly(Var var) : mPoly(var) {}
+  MultiPoly(MPoly&& poly) : mPoly(std::move(poly)) {}
+  MultiPoly(int i, Var x, unsigned int n)
       : mPoly(MPoly(i) * carl::pow(MPoly(x), n)) {}
+
+  const std::string type() const {
+    return "Carl" ;
+  }
 
   const MPoly poly() const { return mPoly; }
   MPoly poly() { return mPoly; }
 };
 
-std::ostream &operator<<(std::ostream &os, const UniPoly &p) {
+std::ostream& operator<<(std::ostream& os, const UniPoly& p) {
   return os << p.poly();
 }
 
-UniPoly operator+(const UniPoly &lhs, const UniPoly &rhs) {
+UniPoly operator+(const UniPoly& lhs, const UniPoly& rhs) {
   return UniPoly(lhs.poly() + rhs.poly());
 }
 
-UniPoly operator-(const UniPoly &lhs, const UniPoly &rhs) {
+UniPoly operator-(const UniPoly& lhs, const UniPoly& rhs) {
   return UniPoly(lhs.poly() - rhs.poly());
 }
 
-UniPoly operator*(const UniPoly &lhs, const UniPoly &rhs) {
+UniPoly operator*(const UniPoly& lhs, const UniPoly& rhs) {
   return UniPoly(lhs.poly() * rhs.poly());
 }
 
-std::ostream &operator<<(std::ostream &os, const MultiPoly &p) {
+std::ostream& operator<<(std::ostream& os, const MultiPoly& p) {
   return os << p.poly();
 }
 
-MultiPoly operator+(const MultiPoly &lhs, const MultiPoly &rhs) {
+MultiPoly operator+(const MultiPoly& lhs, const MultiPoly& rhs) {
   return MultiPoly(lhs.poly() + rhs.poly());
 }
 
-MultiPoly operator-(const MultiPoly &lhs, const MultiPoly &rhs) {
+MultiPoly operator-(const MultiPoly& lhs, const MultiPoly& rhs) {
   return MultiPoly(lhs.poly() - rhs.poly());
 }
 
-MultiPoly operator*(const MultiPoly &lhs, const MultiPoly &rhs) {
+MultiPoly operator*(const MultiPoly& lhs, const MultiPoly& rhs) {
   return MultiPoly(lhs.poly() * rhs.poly());
 }
 
 class CarlWrapper {
   std::map<std::string, Var> variables;
 
-public:
+ public:
   using MultiPoly = carl::MultiPoly;
   using UniPoly = carl::UniPoly;
 
@@ -97,4 +103,4 @@ public:
   }
 };
 
-} // namespace carl
+}  // namespace carl
