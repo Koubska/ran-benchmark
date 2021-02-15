@@ -1,109 +1,99 @@
 #pragma once
 
 /*
- * Wrapper for carl.
+ * Wrapper for carl. Download and build carl somewhere and adapt the path
+ * here.
  */
 
-#include <array>
-#include <cassert>
 #include <iostream>
-#include <vector>
+#include <map>
 
 #include "../carl/src/carl-model/Model.h"
 #include "../carl/src/carl/core/MultivariatePolynomial.h"
 #include "../carl/src/carl/core/UnivariatePolynomial.h"
 #include "../carl/src/carl/core/polynomialfunctions/to_univariate_polynomial.h"
-#include "../carl/src/carl/formula/model/ran/RealAlgebraicNumber.h"
-#include "../carl/src/carl/formula/model/ran/real_roots.h"
-#include "wrapper_abstract.h"
+#include "../carl/src/carl/ran/interval/ran_interval_real_roots.h"
 
 namespace carl {
 
-using MPoly = typename carl::MultivariatePolynomial<mpq_class>;
-using UMPoly = typename carl::UnivariatePolynomial<MPoly>;
-using UPoly = typename carl::UnivariatePolynomial<mpq_class>;
+using MPoly = carl::MultivariatePolynomial<mpq_class>;
+using UMPoly = carl::UnivariatePolynomial<MPoly>;
+using UPoly = carl::UnivariatePolynomial<mpq_class>;
 using RAN = carl::RealAlgebraicNumber<mpq_class>;
+using Var = carl::Variable;
 
-class Poly {
-  friend std::ostream &operator<<(std::ostream &os, const Poly &p);
+class UniPoly {
+  friend std::ostream &operator<<(std::ostream &os, const UniPoly &p);
+
+private:
+  UPoly uPoly;
+
+public:
+  // Poly() {} UnivariatePolynomial does not have the empty Constructor
+  UniPoly(UPoly &&poly) : uPoly(std::move(poly)) {}
+  UniPoly(int coeff, Var var, unsigned int pow) : uPoly(var, coeff, pow) {}
+
+  const UPoly poly() const { return uPoly; }
+  UPoly poly() { return uPoly; }
+};
+
+class MultiPoly {
+  friend std::ostream &operator<<(std::ostream &os, const MultiPoly &p);
 
 private:
   MPoly mPoly;
 
 public:
-  Poly() {}
-  Poly(MPoly &&poly) : mPoly(std::move(poly)) {}
-  Poly(int i, carl::Variable x, unsigned n)
+  MultiPoly() {}
+  MultiPoly(MPoly &&poly) : mPoly(std::move(poly)) {}
+  MultiPoly(int i, Var x, unsigned n)
       : mPoly(MPoly(i) * carl::pow(MPoly(x), n)) {}
 
-  auto poly() const { return mPoly; }
+  const MPoly poly() const { return mPoly; }
+  MPoly poly() { return mPoly; }
 };
 
-std::ostream &operator<<(std::ostream &os, const Poly &p) {
+std::ostream &operator<<(std::ostream &os, const UniPoly &p) {
   return os << p.poly();
 }
 
-Poly operator+(const Poly &lhs, const Poly &rhs) {
-  return Poly(lhs.poly() + rhs.poly());
-}
-Poly operator-(const Poly &lhs, const Poly &rhs) {
-  return Poly(lhs.poly() - rhs.poly());
-}
-Poly operator*(const Poly &lhs, const Poly &rhs) {
-  return Poly(lhs.poly() * rhs.poly());
+UniPoly operator+(const UniPoly &lhs, const UniPoly &rhs) {
+  return UniPoly(lhs.poly() + rhs.poly());
 }
 
-Poly resultant(const Poly &p, const Poly &q) {
-  return Poly(carl::resultant(p.poly(), q.poly()));
+UniPoly operator-(const UniPoly &lhs, const UniPoly &rhs) {
+  return UniPoly(lhs.poly() - rhs.poly());
 }
 
-class CarlWrapper : public Wrapper {
-  std::map<carl::Variable, RAN> mModel;
+UniPoly operator*(const UniPoly &lhs, const UniPoly &rhs) {
+  return UniPoly(lhs.poly() * rhs.poly());
+}
 
-  std::map<std::string, carl::Variable> variables;
+std::ostream &operator<<(std::ostream &os, const MultiPoly &p) {
+  return os << p.poly();
+}
+
+MultiPoly operator+(const MultiPoly &lhs, const MultiPoly &rhs) {
+  return MultiPoly(lhs.poly() + rhs.poly());
+}
+
+MultiPoly operator-(const MultiPoly &lhs, const MultiPoly &rhs) {
+  return MultiPoly(lhs.poly() - rhs.poly());
+}
+
+MultiPoly operator*(const MultiPoly &lhs, const MultiPoly &rhs) {
+  return MultiPoly(lhs.poly() * rhs.poly());
+}
+
+class CarlWrapper {
+  std::map<std::string, Var> variables;
 
 public:
-  using Poly = carl::Poly;
+  using MultiPoly = carl::MultiPoly;
+  using UniPoly = carl::UniPoly;
 
-  carl::Variable fresh_variable(const char *name) {
-    if (variables.count(name)) {
-      return variables[name];
-    } else {
-      carl::Variable temp = carl::freshRealVariable(std::string(name));
-      variables[name] = temp;
-      return temp;
-    }
-  }
-
-  void set_variable(carl::Variable var, PolyInit poly, int low, int high) {
-    std::vector<mpq_class> coeffs;
-    for (int c : poly)
-      coeffs.emplace_back(c);
-    UPoly p(var, std::move(coeffs));
-    RAN ran(p, Interval<mpq_class>(low, BoundType::STRICT, high,
-                                   BoundType::STRICT));
-    mModel[var] = ran;
-  }
-
-  std::vector<RAN> isolate_real_roots(const Poly &p, carl::Variable v) {
-    UMPoly poly = carl::to_univariate_polynomial(p.poly(), v);
-    return carl::realRoots(poly, mModel);
-  }
-
-  std::vector<RAN> lift(const Poly &p, carl::Variable v) {
-    auto roots = isolate_real_roots(p, v);
-    if (roots.size() == 0) {
-      return {RAN(0)};
-    }
-    std::vector<RAN> samples;
-    samples.emplace_back(sample_below(roots[0]));
-    samples.emplace_back(roots[0]);
-    for (std::size_t i = 1; i < roots.size(); ++i) {
-      samples.emplace_back(sample_between(samples.back(), roots[i]));
-      samples.emplace_back(roots[i]);
-    }
-    samples.emplace_back(sample_above(samples.back()));
-    return samples;
+  Var fresh_variable(const std::string name) {
+    return carl::freshRealVariable(std::string(name));
   }
 };
 
