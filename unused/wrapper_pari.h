@@ -10,8 +10,6 @@
 #include <iostream>
 #include <vector>
 
-#include "wrapper_abstract.h"
-
 namespace pari {
 
 std::ostream &operator<<(std::ostream &os, const GEN &g) {
