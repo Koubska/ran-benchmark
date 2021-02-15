@@ -7,7 +7,7 @@ static const bool DEBUG = false;
 #include "wrapper_carl.h"
 #endif
 #ifdef WITH_LIBPOLY
-#include "wrapper_lp.h"
+#include "wrapper_libpoly.h"
 #endif
 
 #include <array>
@@ -16,6 +16,8 @@ static const bool DEBUG = false;
 #include "benchmark/benchmark.h"
 #include "polynomial_generator.h"
 #include "test_functions.h"
+
+
 
 #ifdef WITH_CARL
 BENCHMARK_CAPTURE(test_addition, CARL,
@@ -39,6 +41,7 @@ BENCHMARK_CAPTURE(test_subtraction, LIBPOLY,
 BENCHMARK_CAPTURE(test_multiplication, LIBPOLY,
                   PolynomialGenerator::instance().getLPPoly1(),
                   PolynomialGenerator::instance().getLPPoly2(), DEBUG);
+
 #endif
 
 BENCHMARK_MAIN();

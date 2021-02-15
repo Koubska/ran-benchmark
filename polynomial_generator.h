@@ -1,7 +1,7 @@
 #pragma once
 
 #include "wrapper_carl.h"
-#include "wrapper_lp.h"
+#include "wrapper_libpoly.h"
 
 class PolynomialGenerator {
 public:
@@ -10,23 +10,23 @@ public:
     return generator;
   }
 
-  carl::Poly &getCarlPoly1() { return poly_carl1; }
+  carl::MultiPoly &getCarlPoly1() { return poly_carl1; }
 
-  carl::Poly &getCarlPoly2() { return poly_carl2; }
+  carl::MultiPoly &getCarlPoly2() { return poly_carl2; }
 
-  lp::Poly &getLPPoly1() { return poly_lp1; }
+  libpoly::MultiPoly &getLPPoly1() { return poly_libPoly1; }
 
-  lp::Poly &getLPPoly2() { return poly_lp2; }
+  libpoly::MultiPoly &getLPPoly2() { return poly_libPoly2; }
 
 private:
-  carl::Poly poly_carl1;
-  carl::Poly poly_carl2;
+  carl::MultiPoly poly_carl1;
+  carl::MultiPoly poly_carl2;
 
-  lp::Poly poly_lp1;
-  lp::Poly poly_lp2;
+  libpoly::MultiPoly poly_libPoly1;
+  libpoly::MultiPoly poly_libPoly2;
 
   template <typename T> auto createPoly1(T &t) { // y^2 - 1*z
-    using P = typename T::Poly;
+    using P = typename T::MultiPoly;
     // Generate Variables
     auto y = t.fresh_variable("y");
     auto z = t.fresh_variable("z");
@@ -36,7 +36,7 @@ private:
   }
 
   template <typename T> auto createPoly2(T &t) { // 3x^2 + 2y
-    using P = typename T::Poly;
+    using P = typename T::MultiPoly;
     // Generate Variables
     auto x = t.fresh_variable("x");
     auto y = t.fresh_variable("y");
@@ -48,16 +48,17 @@ private:
   PolynomialGenerator() {
     // Create Wrapper
     carl::CarlWrapper carl_wrapper;
-    lp::LibPolyWrapper lp_wrapper;
+    libpoly::LibPolyWrapper libpoly_wrapper;
     // Create Polynomials
     poly_carl1 = createPoly1(carl_wrapper);
     poly_carl2 = createPoly2(carl_wrapper);
-    poly_lp1 = createPoly1(lp_wrapper);
-    poly_lp2 = createPoly2(lp_wrapper);
+    poly_libPoly1 = createPoly1(libpoly_wrapper);
+    poly_libPoly2 = createPoly2(libpoly_wrapper);
 
     std::cout << "Called PolyGeneratorConstructor" << std::endl;
     std::cout << "Carl:    " << poly_carl1 << "\t\t" << poly_carl2 << std::endl;
-    std::cout << "LibPoly: " << poly_lp1 << "\t\t" << poly_lp2 << std::endl;
+    std::cout << "LibPoly:    " << poly_libPoly1 << "\t\t" << poly_libPoly2
+              << std::endl;
   }
 
   PolynomialGenerator(const PolynomialGenerator &);
