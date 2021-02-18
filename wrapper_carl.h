@@ -14,6 +14,10 @@
 #include "../carl/src/carl/core/polynomialfunctions/to_univariate_polynomial.h"
 #include "../carl/src/carl/ran/interval/ran_interval_real_roots.h"
 
+#include "../carl/src/carl/core/Variables.h"
+#include "../carl/src/carl/core/polynomialfunctions/Resultant.h"
+#include "../carl/src/carl/core/polynomialfunctions/to_univariate_polynomial.h"
+
 namespace carl {
 
 using MPoly = carl::MultivariatePolynomial<mpq_class>;
@@ -33,6 +37,8 @@ class UniPoly {
   UniPoly(UPoly&& poly) : uPoly(std::move(poly)) {}
   UniPoly(int coeff, Var var, unsigned int pow) : uPoly(var, coeff, pow) {}
 
+  const std::string type() const { return "Carl Uni"; }
+
   const UPoly poly() const { return uPoly; }
   UPoly poly() { return uPoly; }
 };
@@ -45,18 +51,21 @@ class MultiPoly {
 
  public:
   MultiPoly() : mPoly() {}
+  MultiPoly(UMPoly poly) : mPoly(poly) {}
   MultiPoly(int constant) : mPoly(constant) {}  // Create Constant Poly
   MultiPoly(Var var) : mPoly(var) {}
   MultiPoly(MPoly&& poly) : mPoly(std::move(poly)) {}
   MultiPoly(int i, Var x, unsigned int n)
       : mPoly(MPoly(i) * carl::pow(MPoly(x), n)) {}
 
-  const std::string type() const {
-    return "Carl" ;
-  }
+  const std::string type() const { return "Carl Multi"; }
 
   const MPoly poly() const { return mPoly; }
   MPoly poly() { return mPoly; }
+
+  std::vector<Var> getVariables() {
+    return carl::variables(mPoly).underlyingVariables();
+  }
 };
 
 std::ostream& operator<<(std::ostream& os, const UniPoly& p) {
@@ -91,6 +100,15 @@ MultiPoly operator*(const MultiPoly& lhs, const MultiPoly& rhs) {
   return MultiPoly(lhs.poly() * rhs.poly());
 }
 
+UMPoly to_univariate_polynomial(const MultiPoly& poly, const Var& mainVar) {
+  return carl::to_univariate_polynomial(poly.poly(), mainVar);
+}
+
+auto resultant(const MultiPoly& lhs, const MultiPoly& rhs, const Var& mainVar) {
+  return MultiPoly(carl::resultant(to_univariate_polynomial(lhs, mainVar),
+                                   to_univariate_polynomial(rhs, mainVar)));
+}
+
 class CarlWrapper {
   std::map<std::string, Var> variables;
 
@@ -98,8 +116,14 @@ class CarlWrapper {
   using MultiPoly = carl::MultiPoly;
   using UniPoly = carl::UniPoly;
 
-  Var fresh_variable(const std::string name) {
-    return carl::freshRealVariable(std::string(name));
+  Var fresh_variable(std::string name) {
+    if (variables.count(name)) {
+      return variables[name] ;
+    } else {
+      auto temp = carl::freshRealVariable(std::string(name));
+      variables[name] = temp;
+      return temp;
+    }
   }
 };
 

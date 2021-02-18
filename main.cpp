@@ -32,6 +32,12 @@ BENCHMARK_CAPTURE(test_multiplication,
                   CARL,
                   PolynomialGenerator::instance().getCarlPoly1(),
                   PolynomialGenerator::instance().getCarlPoly2());
+
+BENCHMARK_CAPTURE(test_resultant,
+                  CARL,
+                  PolynomialGenerator::instance().getCarlPoly1(),
+                  PolynomialGenerator::instance().getCarlPoly2(),
+                  PolynomialGenerator::instance().getCarlVariable());
 #endif
 
 #ifdef WITH_LIBPOLY
@@ -47,6 +53,12 @@ BENCHMARK_CAPTURE(test_multiplication,
                   LIBPOLY,
                   PolynomialGenerator::instance().getLPPoly1(),
                   PolynomialGenerator::instance().getLPPoly2());
+
+BENCHMARK_CAPTURE(test_resultant,
+                  LIBPOLY,
+                  PolynomialGenerator::instance().getLPPoly1(),
+                  PolynomialGenerator::instance().getLPPoly2(),
+                  PolynomialGenerator::instance().getLibPolyVariable());
 
 #endif
 
@@ -71,6 +83,13 @@ int main(int argc, char const* argv[]) {
                       PolynomialGenerator::instance().getCarlPoly2());
   test_multiplication(PolynomialGenerator::instance().getLPPoly1(),
                       PolynomialGenerator::instance().getLPPoly2());
+
+  test_resultant(PolynomialGenerator::instance().getCarlPoly1(),
+                 PolynomialGenerator::instance().getCarlPoly2(),
+                 PolynomialGenerator::instance().getCarlVariable());
+  test_resultant(PolynomialGenerator::instance().getLPPoly1(),
+                 PolynomialGenerator::instance().getLPPoly2(),
+                 PolynomialGenerator::instance().getLibPolyVariable());
 
   return 0;
 }

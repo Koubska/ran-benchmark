@@ -8,7 +8,6 @@
 #include "wrapper_carl.h"
 #include "wrapper_libpoly.h"
 
-
 class PolynomialGenerator {
  public:
   static PolynomialGenerator& instance() {
@@ -24,12 +23,18 @@ class PolynomialGenerator {
 
   auto& getLPPoly2() { return poly_libPoly2; }
 
+  auto& getCarlVariable() { return var_carl; }
+
+  auto& getLibPolyVariable() { return var_libpoly; }
+
  private:
   carl::MultiPoly poly_carl1;
   carl::MultiPoly poly_carl2;
+  carl::Var var_carl;
 
   libpoly::MultiPoly poly_libPoly1;
   libpoly::MultiPoly poly_libPoly2;
+  libpoly::Var var_libpoly;
 
   inline bool isInteger(const std::string& s) {
     if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) {
@@ -38,28 +43,6 @@ class PolynomialGenerator {
     char* p;
     strtol(s.c_str(), &p, 10);
     return (*p == 0);
-  }
-
-  template <typename T>
-  auto createPoly1(T& t) {  // y^2 - 1*z
-    using P = typename T::MultiPoly;
-    // Generate Variables
-    auto y = t.fresh_variable("y");
-    auto z = t.fresh_variable("z");
-
-    // Generate Poly
-    return P(1, y, 2) - P(1, z, 1);
-  }
-
-  template <typename T>
-  auto createPoly2(T& t) {  // 3x^2 + 2y
-    using P = typename T::MultiPoly;
-    // Generate Variables
-    auto x = t.fresh_variable("x");
-    auto y = t.fresh_variable("y");
-
-    // Generate Poly
-    return P(3, x, 2) + P(2, y, 1);
   }
 
   template <typename T>
@@ -105,14 +88,22 @@ class PolynomialGenerator {
   }
 
   PolynomialGenerator() {
-    // Create Wrapper
     carl::CarlWrapper carl_wrapper;
     libpoly::LibPolyWrapper libpoly_wrapper;
     // Create Polynomials
-    poly_carl1 = createMultiPoly(carl_wrapper, "-1*x1^2 + -3");
-    poly_carl2 = createMultiPoly(carl_wrapper, "-1*x1");
-    poly_libPoly1 = createMultiPoly(libpoly_wrapper, "-1*x1^2 + -3");
-    poly_libPoly2 = createMultiPoly(libpoly_wrapper, "-1*x1");
+
+    std::string poly1 = "-1*x^5 + -3*x^3 + - 6" ;
+    std::string poly2 = "x^5 + -1 * x^3 + 10*x" ;
+    std::string variable = "x" ;
+
+
+    poly_carl1 = createMultiPoly(carl_wrapper, poly1);
+    poly_carl2 = createMultiPoly(carl_wrapper, poly2);
+    poly_libPoly1 = createMultiPoly(libpoly_wrapper, poly1);
+    poly_libPoly2 = createMultiPoly(libpoly_wrapper, poly2);
+
+    var_carl = carl_wrapper.fresh_variable(variable);
+    var_libpoly = libpoly_wrapper.fresh_variable(variable);
   }
 
   PolynomialGenerator(const PolynomialGenerator&);
