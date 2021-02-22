@@ -92,18 +92,26 @@ class PolynomialGenerator {
     libpoly::LibPolyWrapper libpoly_wrapper;
     // Create Polynomials
 
-    std::string poly1 = "-1*x^5 + -3*x^3 + - 6" ;
-    std::string poly2 = "x^5 + -1 * x^3 + 10*x" ;
-    std::string variable = "x" ;
-
+    std::string poly1 = "-1*x^5 + -3*x^3 + - 6";
+    std::string poly2 = "x^5 + -1 * x^3 + 10*x";
+    std::string main_variable = "x";
 
     poly_carl1 = createMultiPoly(carl_wrapper, poly1);
     poly_carl2 = createMultiPoly(carl_wrapper, poly2);
     poly_libPoly1 = createMultiPoly(libpoly_wrapper, poly1);
     poly_libPoly2 = createMultiPoly(libpoly_wrapper, poly2);
 
-    var_carl = carl_wrapper.fresh_variable(variable);
-    var_libpoly = libpoly_wrapper.fresh_variable(variable);
+    var_carl = carl_wrapper.fresh_variable(main_variable);
+    var_libpoly = libpoly_wrapper.fresh_variable(main_variable);
+
+    auto test1 = carl_wrapper.build_RAN((mpq_class)"411557987/131002976");
+    auto test2 = carl_wrapper.build_RAN(3213131313131312);
+    auto test3 = libpoly_wrapper.build_RAN((mpq_class)"411557987/131002976");
+    auto test4 = libpoly_wrapper.build_RAN(3213131313131312);
+    std::cout << test1 << std::endl;
+    std::cout << test2 << std::endl;
+    std::cout << test3 << std::endl;
+    std::cout << test4 << std::endl;
   }
 
   PolynomialGenerator(const PolynomialGenerator&);
