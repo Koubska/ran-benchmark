@@ -170,8 +170,9 @@ class CarlWrapper {
     return ass ; 
   }
 
-  RAN build_RAN(mpq_class number){
-    return RAN(number) ;
+  template <typename T>
+  RAN build_RAN(T number){
+    return RAN((mpq_class)number) ;
   }
   
 };

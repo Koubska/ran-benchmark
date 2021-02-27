@@ -101,8 +101,8 @@ auto resultant(const MultiPoly& lhs, const MultiPoly& rhs, const Var& mainVar) {
   // auto temp = lhs.poly().get_internal();
   // auto temp2 = lp_polynomial_get_context(temp);
   // auto temp3 = temp2->var_order;
-  // std::cout << poly::main_variable(lhs.poly()) << std::endl ; 
-  // std::cout << poly::main_variable(rhs.poly()) << std::endl ; 
+  //std::cout << poly::main_variable(lhs.poly()) << std::endl ; 
+  //std::cout << poly::main_variable(rhs.poly()) << std::endl ; 
 
   //TODO still unclear how to set the main variable
   return poly::resultant(lhs.poly(), rhs.poly());
@@ -145,12 +145,14 @@ class LibPolyWrapper {
     for(size_t i = 0; i < var_name.size(); ++i){
       ass.set(variables[var_name[i]], poly::Value(values[i])) ;
     }
+    std::cout << "In builder: " << ass << std::endl ; 
     return ass ;
   }
 
-  RAN build_RAN(mpq_class number){
+  template <typename T>
+  RAN build_RAN(T number){
     //Build rational
-    poly::Rational rat = poly::Rational(number) ;
+    poly::Rational rat = poly::Rational((mpq_class)number) ;
     RAN ran ; 
     lp_algebraic_number_construct_from_rational(ran.get_internal(), rat.get_internal()) ;
     return ran ; 

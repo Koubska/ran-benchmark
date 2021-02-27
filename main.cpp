@@ -58,7 +58,7 @@ BENCHMARK_CAPTURE(test_resultant,
                   LIBPOLY,
                   PolynomialGenerator::instance().getLPPoly1(),
                   PolynomialGenerator::instance().getLPPoly2(),
-                  PolynomialGenerator::instance().getLibPolyVariable());
+                  PolynomialGenerator::instance().getLPVariable());
 
 #endif
 
@@ -89,8 +89,9 @@ int main(int argc, char const* argv[]) {
                  PolynomialGenerator::instance().getCarlVariable());
   test_resultant(PolynomialGenerator::instance().getLPPoly1(),
                  PolynomialGenerator::instance().getLPPoly2(),
-                 PolynomialGenerator::instance().getLibPolyVariable());
+                 PolynomialGenerator::instance().getLPVariable());
 
+  std::cout << "ENDE" << std::endl ;
   return 0;
 }
 

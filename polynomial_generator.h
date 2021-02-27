@@ -7,6 +7,7 @@
 
 #include "wrapper_carl.h"
 #include "wrapper_libpoly.h"
+#include "../libpoly/include/assignment.h"
 
 class PolynomialGenerator {
  public:
@@ -19,22 +20,28 @@ class PolynomialGenerator {
 
   auto& getCarlPoly2() { return poly_carl2; }
 
-  auto& getLPPoly1() { return poly_libPoly1; }
+  auto& getLPPoly1() { return poly_libpoly1; }
 
-  auto& getLPPoly2() { return poly_libPoly2; }
+  auto& getLPPoly2() { return poly_libpoly2; }
 
   auto& getCarlVariable() { return var_carl; }
 
-  auto& getLibPolyVariable() { return var_libpoly; }
+  auto& getLPVariable() { return var_libpoly; }
+
+  auto& getCarlAssignment() { return assignment_carl; }
+
+  auto& getLPAssignment() { return assignment_libpoly; }
 
  private:
   carl::MultiPoly poly_carl1;
   carl::MultiPoly poly_carl2;
   carl::Var var_carl;
+  carl::Assignment assignment_carl;
 
-  libpoly::MultiPoly poly_libPoly1;
-  libpoly::MultiPoly poly_libPoly2;
+  libpoly::MultiPoly poly_libpoly1;
+  libpoly::MultiPoly poly_libpoly2;
   libpoly::Var var_libpoly;
+  libpoly::Assignment assignment_libpoly;
 
   inline bool isInteger(const std::string& s) {
     if (s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) {
@@ -87,34 +94,51 @@ class PolynomialGenerator {
     return poly;
   }
 
+  template <typename T>
+  auto createAssignment(T& t) {
+    // Insertions needs to be in the same order
+    using RAN = typename T::RAN ;
+    std::vector<std::string> var_names ;
+    std::vector<RAN> var_assignments ;
+    var_names.emplace_back("y") ;
+    var_assignments.emplace_back(t.build_RAN(123) ) ;
+
+    auto ass = t.build_assignment(var_names, var_assignments);
+    std::cout << ass << std::endl;
+    return ass;
+  }
+
   PolynomialGenerator() {
     carl::CarlWrapper carl_wrapper;
     libpoly::LibPolyWrapper libpoly_wrapper;
     // Create Polynomials
 
-    std::string poly1 = "-1*x^5 + -3*x^3 + - 6";
-    std::string poly2 = "x^5 + -1 * x^3 + 10*x";
-    std::string main_variable = "x";
+    std::string poly1 = "-1*x^5 + -3*y^3 + - 6";
+    std::string poly2 = "x^5 + -1 * y^3 + 10*x";
+    std::string main_variable = "y";
 
     poly_carl1 = createMultiPoly(carl_wrapper, poly1);
     poly_carl2 = createMultiPoly(carl_wrapper, poly2);
-    poly_libPoly1 = createMultiPoly(libpoly_wrapper, poly1);
-    poly_libPoly2 = createMultiPoly(libpoly_wrapper, poly2);
+    poly_libpoly1 = createMultiPoly(libpoly_wrapper, poly1);
+    poly_libpoly2 = createMultiPoly(libpoly_wrapper, poly2);
 
     var_carl = carl_wrapper.fresh_variable(main_variable);
     var_libpoly = libpoly_wrapper.fresh_variable(main_variable);
 
-    auto test1 = carl_wrapper.build_RAN((mpq_class)"411557987/131002976");
-    auto test2 = carl_wrapper.build_RAN(3213131313131312);
-    auto test3 = libpoly_wrapper.build_RAN((mpq_class)"411557987/131002976");
-    auto test4 = libpoly_wrapper.build_RAN(3213131313131312);
-    std::cout << test1 << std::endl;
-    std::cout << test2 << std::endl;
-    std::cout << test3 << std::endl;
-    std::cout << test4 << std::endl;
+    assignment_carl = createAssignment(carl_wrapper) ;
+    assignment_libpoly = createAssignment(libpoly_wrapper) ; 
+    std::cout << "In Function: " << assignment_libpoly << std::endl ; 
   }
 
   PolynomialGenerator(const PolynomialGenerator&);
 
   PolynomialGenerator& operator=(const PolynomialGenerator&);
+
+  ~PolynomialGenerator(){
+    std::cout << "Called Destructor BEFORE" << std::endl ;
+    std::cout << lp_assignment_to_string(assignment_libpoly.get_internal()) << std::endl ; 
+    assignment_libpoly.unset(var_libpoly) ;
+    std::cout << assignment_libpoly << std::endl ; 
+    std::cout << "Called Destructor AFTER" << std::endl ;
+  }
 };
