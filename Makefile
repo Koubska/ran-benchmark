@@ -6,4 +6,4 @@ PARIOPTS := -lpari
 OPTS := $(CARLOPTS) $(LPOPTS) $(BENCH) -lgmpxx -lgmp -Wall
 
 main: main.cpp wrapper_carl.h wrapper_libpoly.h polynomial_generator.h test_functions.h
-	g++ -O3 -g0 -std=c++17 $< -o $@ $(OPTS) 
+	g++ -O0 -g -std=c++17 $< -o $@ $(OPTS) 
