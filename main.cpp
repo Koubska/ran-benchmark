@@ -91,11 +91,8 @@ int main(int argc, char const* argv[]) {
                  PolynomialGenerator::instance().getLPPoly2(),
                  PolynomialGenerator::instance().getLPVariable());
 
-<<<<<<< HEAD
   std::cout << "Assignment carl  " << PolynomialGenerator::instance().getCarlAssignment()  << std::endl ;
   std::cout << "Assignment libpoly  " << PolynomialGenerator::instance().getLPAssignment() << std::endl ;
-=======
->>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
   std::cout << "ENDE" << std::endl ;
   return 0;
 }
