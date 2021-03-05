@@ -169,8 +169,14 @@ public:
     }
   }
 
+<<<<<<< HEAD
   template <typename T> RAN build_RAN(T number) {
     return RAN((mpq_class)number);
+=======
+  template <typename T>
+  RAN build_RAN(T number){
+    return RAN((mpq_class)number) ;
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
   }
 };
 

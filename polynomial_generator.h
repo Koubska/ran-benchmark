@@ -23,13 +23,27 @@ public:
 
   auto &getCarlPoly2() { return poly_carl2; }
 
+<<<<<<< HEAD
   auto &getLPPoly1() { return poly_libpoly1; }
 
   auto &getLPPoly2() { return poly_libpoly2; }
+=======
+  auto& getLPPoly1() { return poly_libpoly1; }
+
+  auto& getLPPoly2() { return poly_libpoly2; }
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
 
   auto &getCarlVariable() { return var_carl; }
 
+<<<<<<< HEAD
   auto &getLPVariable() { return var_libpoly; }
+=======
+  auto& getLPVariable() { return var_libpoly; }
+
+  auto& getCarlAssignment() { return assignment_carl; }
+
+  auto& getLPAssignment() { return assignment_libpoly; }
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
 
   auto &getCarlAssignment() { return *assignment_carl; }
 
@@ -39,12 +53,20 @@ private:
   carl::MultiPoly poly_carl1;
   carl::MultiPoly poly_carl2;
   carl::Var var_carl;
+<<<<<<< HEAD
   std::shared_ptr<carl::Assignment> assignment_carl = std::shared_ptr<carl::Assignment>(new carl::Assignment()) ;
+=======
+  carl::Assignment assignment_carl;
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
 
   libpoly::MultiPoly poly_libpoly1;
   libpoly::MultiPoly poly_libpoly2;
   libpoly::Var var_libpoly;
+<<<<<<< HEAD
   std::shared_ptr<libpoly::Assignment> assignment_libpoly = std::shared_ptr<libpoly::Assignment>(new libpoly::Assignment());
+=======
+  libpoly::Assignment assignment_libpoly;
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
 
   inline bool isInteger(const std::string &s)
   {
@@ -107,6 +129,7 @@ private:
     return poly;
   }
 
+<<<<<<< HEAD
   template <typename T, typename C>
   auto createAssignment(T &t, C ass)
   {
@@ -129,6 +152,23 @@ private:
 
   PolynomialGenerator()
   {
+=======
+  template <typename T>
+  auto createAssignment(T& t) {
+    // Insertions needs to be in the same order
+    using RAN = typename T::RAN ;
+    std::vector<std::string> var_names ;
+    std::vector<RAN> var_assignments ;
+    var_names.emplace_back("y") ;
+    var_assignments.emplace_back(t.build_RAN(123) ) ;
+
+    auto ass = t.build_assignment(var_names, var_assignments);
+    std::cout << ass << std::endl;
+    return ass;
+  }
+
+  PolynomialGenerator() {
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
     carl::CarlWrapper carl_wrapper;
     libpoly::LibPolyWrapper libpoly_wrapper;
     // Create Polynomials
@@ -141,18 +181,27 @@ private:
     poly_carl2 = createMultiPoly(carl_wrapper, poly2);
     poly_libpoly1 = createMultiPoly(libpoly_wrapper, poly1);
     poly_libpoly2 = createMultiPoly(libpoly_wrapper, poly2);
+<<<<<<< HEAD
     std::cout << "Carl Polys: " <<  poly_carl1.poly() << "\t\t" << poly_carl2.poly() << std::endl;
     std::cout << "LibPoly Polys: " << poly_libpoly1.poly() << "\t\t" << poly_libpoly2.poly() << std::endl;
+=======
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
 
     var_carl = carl_wrapper.fresh_variable(main_variable);
     var_libpoly = libpoly_wrapper.fresh_variable(main_variable);
 
+<<<<<<< HEAD
     createAssignment(carl_wrapper, assignment_carl);
     std::cout << "In Function carl: " << *assignment_carl << std::endl;
 
     createAssignment(libpoly_wrapper, assignment_libpoly);
     std::cout << "In Function libpoly: " << *assignment_libpoly << std::endl;
 
+=======
+    assignment_carl = createAssignment(carl_wrapper) ;
+    assignment_libpoly = createAssignment(libpoly_wrapper) ; 
+    std::cout << "In Function: " << assignment_libpoly << std::endl ; 
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
   }
 
   PolynomialGenerator(const PolynomialGenerator &);
@@ -160,4 +209,16 @@ private:
   PolynomialGenerator &operator=(const PolynomialGenerator &);
 
 
+<<<<<<< HEAD
+=======
+  PolynomialGenerator& operator=(const PolynomialGenerator&);
+
+  ~PolynomialGenerator(){
+    std::cout << "Called Destructor BEFORE" << std::endl ;
+    std::cout << lp_assignment_to_string(assignment_libpoly.get_internal()) << std::endl ; 
+    assignment_libpoly.unset(var_libpoly) ;
+    std::cout << assignment_libpoly << std::endl ; 
+    std::cout << "Called Destructor AFTER" << std::endl ;
+  }
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
 };

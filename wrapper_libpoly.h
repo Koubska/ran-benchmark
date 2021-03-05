@@ -123,8 +123,13 @@ auto resultant(const MultiPoly &lhs, const MultiPoly &rhs, const Var &mainVar) {
   // auto temp = lhs.poly().get_internal();
   // auto temp2 = lp_polynomial_get_context(temp);
   // auto temp3 = temp2->var_order;
+<<<<<<< HEAD
   std::cout << poly::main_variable(lhs.poly()) << std::endl;
   std::cout << poly::main_variable(rhs.poly()) << std::endl;
+=======
+  //std::cout << poly::main_variable(lhs.poly()) << std::endl ; 
+  //std::cout << poly::main_variable(rhs.poly()) << std::endl ; 
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
 
   // TODO still unclear how to set the main variable
   return poly::resultant(lhs.poly(), rhs.poly());
@@ -162,6 +167,7 @@ public:
     for (size_t i = 0; i < var_name.size(); ++i) {
       ass->set(fresh_variable(var_name[i]), build_RAN(values[i]));
     }
+<<<<<<< HEAD
   }
 
   template <typename T> RAN build_RAN(const T &number) {
@@ -172,6 +178,19 @@ public:
     RAN ran = poly::AlgebraicNumber(&temp);
     lp_algebraic_number_destruct(&temp);
     return ran;
+=======
+    std::cout << "In builder: " << ass << std::endl ; 
+    return ass ;
+  }
+
+  template <typename T>
+  RAN build_RAN(T number){
+    //Build rational
+    poly::Rational rat = poly::Rational((mpq_class)number) ;
+    RAN ran ; 
+    lp_algebraic_number_construct_from_rational(ran.get_internal(), rat.get_internal()) ;
+    return ran ; 
+>>>>>>> f00ec42ab874d14ab853b2910a9eab4adc00c261
   }
 };
 
