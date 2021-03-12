@@ -60,3 +60,17 @@ template <typename T, typename C>
 static void test_resultant(T& poly1, T& poly2, C& variable) {
   printPolys(poly1, poly2, resultant(poly1, poly2, variable), "Resultant ");
 }
+
+template <typename T>
+static void test_resultant(benchmark::State& state, T& poly1, T& poly2) {
+  for (auto _ : state) {
+    // Perform method to test
+    auto res = resultant(poly1, poly2) ;
+  }
+}
+
+
+template <typename T>
+static void test_resultant(T& poly1, T& poly2) {
+  printPolys(poly1, poly2, resultant(poly1, poly2), "Resultant ");
+}

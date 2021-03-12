@@ -120,11 +120,15 @@ UniPoly operator*(const UniPoly &lhs, const UniPoly &rhs) {
 auto resultant(const MultiPoly &lhs, const MultiPoly &rhs, const Var &mainVar) {
   // lhs.poly().get_internal()->ctx->var_order->top = mainVar.get_internal();
   // rhs.poly().get_internal()->ctx->var_order->top = mainVar.get_internal();
-  // auto temp = lhs.poly().get_internal();
-  // auto temp2 = lp_polynomial_get_context(temp);
-  // auto temp3 = temp2->var_order;
+  //auto test1 = lp_polynomial_get_context(lhs.poly().get_internal());
+  //auto test2 = lp_polynomial_get_context(rhs.poly().get_internal());
+  //lp_variable_order_push(
+  //    lp_polynomial_get_context(lhs.poly().get_internal())->var_order,
+  //    mainVar.get_internal()); // Does not work
+  //std::cout << lp_polynomial_context_equal(test1, test2) << std::endl;
   std::cout << poly::main_variable(lhs.poly()) << std::endl;
   std::cout << poly::main_variable(rhs.poly()) << std::endl;
+  std::cout << mainVar << std::endl;
 
   // TODO still unclear how to set the main variable
   return poly::resultant(lhs.poly(), rhs.poly());
@@ -157,8 +161,9 @@ public:
   }
 
   // Assumes var_name.size() == values.size()
-  void build_assignment(std::shared_ptr<Assignment> ass, const std::vector<std::string> &var_name,
-                              const std::vector<std::string> &values) {
+  void build_assignment(std::shared_ptr<Assignment> ass,
+                        const std::vector<std::string> &var_name,
+                        const std::vector<std::string> &values) {
     for (size_t i = 0; i < var_name.size(); ++i) {
       ass->set(fresh_variable(var_name[i]), build_RAN(values[i]));
     }

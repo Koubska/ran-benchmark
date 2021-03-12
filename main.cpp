@@ -20,42 +20,38 @@
 #ifndef DEBUG
 
 #ifdef WITH_CARL
-BENCHMARK_CAPTURE(test_addition,
-                  CARL,
+BENCHMARK_CAPTURE(test_addition, CARL,
                   PolynomialGenerator::instance().getCarlPoly1(),
                   PolynomialGenerator::instance().getCarlPoly2());
-BENCHMARK_CAPTURE(test_subtraction,
-                  CARL,
+BENCHMARK_CAPTURE(test_subtraction, CARL,
                   PolynomialGenerator::instance().getCarlPoly1(),
                   PolynomialGenerator::instance().getCarlPoly2());
-BENCHMARK_CAPTURE(test_multiplication,
-                  CARL,
+BENCHMARK_CAPTURE(test_multiplication, CARL,
                   PolynomialGenerator::instance().getCarlPoly1(),
                   PolynomialGenerator::instance().getCarlPoly2());
 
-BENCHMARK_CAPTURE(test_resultant,
-                  CARL,
+BENCHMARK_CAPTURE(test_resultant, CARL_MULTI,
                   PolynomialGenerator::instance().getCarlPoly1(),
                   PolynomialGenerator::instance().getCarlPoly2(),
                   PolynomialGenerator::instance().getCarlVariable());
+
+BENCHMARK_CAPTURE(test_resultant, CARL_UNIMULTI,
+                  PolynomialGenerator::instance().getCarlPoly1UniMulti(),
+                  PolynomialGenerator::instance().getCarlPoly2UniMulti());
 #endif
 
 #ifdef WITH_LIBPOLY
-BENCHMARK_CAPTURE(test_addition,
-                  LIBPOLY,
+BENCHMARK_CAPTURE(test_addition, LIBPOLY,
                   PolynomialGenerator::instance().getLPPoly1(),
                   PolynomialGenerator::instance().getLPPoly2());
-BENCHMARK_CAPTURE(test_subtraction,
-                  LIBPOLY,
+BENCHMARK_CAPTURE(test_subtraction, LIBPOLY,
                   PolynomialGenerator::instance().getLPPoly1(),
                   PolynomialGenerator::instance().getLPPoly2());
-BENCHMARK_CAPTURE(test_multiplication,
-                  LIBPOLY,
+BENCHMARK_CAPTURE(test_multiplication, LIBPOLY,
                   PolynomialGenerator::instance().getLPPoly1(),
                   PolynomialGenerator::instance().getLPPoly2());
 
-BENCHMARK_CAPTURE(test_resultant,
-                  LIBPOLY,
+BENCHMARK_CAPTURE(test_resultant, LIBPOLY,
                   PolynomialGenerator::instance().getLPPoly1(),
                   PolynomialGenerator::instance().getLPPoly2(),
                   PolynomialGenerator::instance().getLPVariable());
@@ -66,7 +62,7 @@ BENCHMARK_MAIN();
 
 #else
 
-int main(int argc, char const* argv[]) {
+int main(int argc, char const *argv[]) {
   std::cout << "DEBUG MODE" << std::endl;
 
   test_addition(PolynomialGenerator::instance().getCarlPoly1(),
@@ -87,13 +83,15 @@ int main(int argc, char const* argv[]) {
   test_resultant(PolynomialGenerator::instance().getCarlPoly1(),
                  PolynomialGenerator::instance().getCarlPoly2(),
                  PolynomialGenerator::instance().getCarlVariable());
+
+  test_resultant(PolynomialGenerator::instance().getCarlPoly1UniMulti(),
+                 PolynomialGenerator::instance().getCarlPoly2UniMulti());
+
   test_resultant(PolynomialGenerator::instance().getLPPoly1(),
                  PolynomialGenerator::instance().getLPPoly2(),
                  PolynomialGenerator::instance().getLPVariable());
 
-  std::cout << "Assignment carl  " << PolynomialGenerator::instance().getCarlAssignment()  << std::endl ;
-  std::cout << "Assignment libpoly  " << PolynomialGenerator::instance().getLPAssignment() << std::endl ;
-  std::cout << "ENDE" << std::endl ;
+  std::cout << "ENDE" << std::endl;
   return 0;
 }
 
