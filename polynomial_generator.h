@@ -5,11 +5,16 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <random>
+#include <sstream>
 
 #include "../carl/src/carl/core/UnivariatePolynomial.h"
 #include "../libpoly/include/assignment.h"
 #include "wrapper_carl.h"
 #include "wrapper_libpoly.h"
+
+
+#include "../carl/src/tests/benchmarks/framework/BenchmarkGenerator.h" //To generate random polynomials
 
 class PolynomialGenerator {
 public:
@@ -124,11 +129,34 @@ private:
   PolynomialGenerator() {
     carl::CarlWrapper carl_wrapper;
     libpoly::LibPolyWrapper libpoly_wrapper;
-    // Create Polynomials
 
-    std::string poly1 = "-1*x^5 + -3*y^3 + - 6";
-    std::string poly2 = "x^5 + -1 * y^3 + 10*x";
-    std::string main_variable = "x";
+    
+    size_t amount_variables = 2 ;
+    carl::BenchmarkInformation benchmark_info(carl::BenchmarkSelection::Random, amount_variables) ;
+    benchmark_info.degree = 20 ; // Max degree of monomials 
+
+    //Todo limit in amount of monomials
+    //Dirty aber was solls, ist für die benchmarks egal
+    carl::ObjectGenerator generator(benchmark_info) ;
+    auto pol1 = generator.newMP<mpq_class>() ;
+    auto pol2 = generator.newMP<mpq_class>() ;
+    auto var = generator.randomVariable() ;
+
+    std::ostringstream pol1_stream ;
+    pol1_stream << pol1 ;
+    std::ostringstream pol2_stream ;
+    pol2_stream << pol2 ;
+    std::ostringstream var_stream ;
+    var_stream << var ; 
+
+    // Create Polynomials
+    //std::string poly1 = "x+y";
+    //std::string poly2 = "y+ -1 *x";
+    //std::string main_variable = "y";
+    std::string poly1 = pol1_stream.str() ;
+    std::string poly2 = pol2_stream.str() ;
+    std::string main_variable = var_stream.str() ;
+
 
     poly_carl1 = createMultiPoly(carl_wrapper, poly1);
     poly_carl2 = createMultiPoly(carl_wrapper, poly2);
@@ -138,12 +166,15 @@ private:
 
     poly_libpoly1 = createMultiPoly(libpoly_wrapper, poly1);
     poly_libpoly2 = createMultiPoly(libpoly_wrapper, poly2);
+    var_libpoly = libpoly_wrapper.fresh_variable(main_variable);
+
     std::cout << "Carl Polys: " << poly_carl1.poly() << "\t\t"
               << poly_carl2.poly() << std::endl;
+    std::cout << "Carl Variable: " << var_carl << std::endl ;
     std::cout << "LibPoly Polys: " << poly_libpoly1.poly() << "\t\t"
               << poly_libpoly2.poly() << std::endl;
+    std::cout << "LibPoly Variable: " << var_libpoly << std::endl ;
 
-    var_libpoly = libpoly_wrapper.fresh_variable(main_variable);
 
     createAssignment(carl_wrapper, assignment_carl);
     std::cout << "Carl Assignment: " << *assignment_carl << std::endl;

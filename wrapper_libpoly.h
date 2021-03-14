@@ -126,9 +126,9 @@ auto resultant(const MultiPoly &lhs, const MultiPoly &rhs, const Var &mainVar) {
   //    lp_polynomial_get_context(lhs.poly().get_internal())->var_order,
   //    mainVar.get_internal()); // Does not work
   //std::cout << lp_polynomial_context_equal(test1, test2) << std::endl;
-  std::cout << poly::main_variable(lhs.poly()) << std::endl;
-  std::cout << poly::main_variable(rhs.poly()) << std::endl;
-  std::cout << mainVar << std::endl;
+  //std::cout << poly::main_variable(lhs.poly()) << std::endl;
+  //std::cout << poly::main_variable(rhs.poly()) << std::endl;
+  //std::cout << mainVar << std::endl;
 
   // TODO still unclear how to set the main variable
   return poly::resultant(lhs.poly(), rhs.poly());

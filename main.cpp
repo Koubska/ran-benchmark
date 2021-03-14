@@ -1,7 +1,7 @@
 #define WITH_CARL
 #define WITH_LIBPOLY
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef WITH_CARL
 #include "wrapper_carl.h"
